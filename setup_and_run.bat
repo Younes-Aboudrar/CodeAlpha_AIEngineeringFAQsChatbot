@@ -105,7 +105,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 rem Download SpaCy model (using the small model which is faster to download and doesn't need compilation)
 echo Downloading SpaCy model (this may take a few minutes)...
-python -m spacy download en_core_web_sm
+python -m spacy download en_core_web_lg
 if %ERRORLEVEL% NEQ 0 (
     echo WARNING: Failed to download SpaCy model.
     echo The application will still run using a fallback text processing method.
