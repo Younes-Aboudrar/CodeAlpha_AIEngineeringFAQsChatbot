@@ -4,10 +4,14 @@ A simple chatbot application that answers questions about AI Engineering using N
 
 ## Features
 
-- Processes FAQ data using SpaCy (or a fallback method if SpaCy is unavailable)
-- Matches user questions with the most similar FAQ using semantic similarity
-- Provides a clean, responsive chat interface
-- Offers real-time responses to queries about AI Engineering
+- Advanced NLP processing using SpaCy (with intelligent fallback methods if SpaCy is unavailable)
+- Smart question matching using semantic similarity, entity recognition, and intent detection
+- Clean, responsive chat interface with typing indicators and animations
+- Conversational context awareness and follow-up question handling
+- Intelligent suggestion chips for related questions and follow-ups
+- Multi-source answer generation for complex questions
+- Conversation history tracking with context preservation
+- Enhanced UI with timestamps, suggestion chips, and visual feedback
 
 ## Prerequisites
 
@@ -15,16 +19,33 @@ A simple chatbot application that answers questions about AI Engineering using N
 - pip package manager
 - For optimal performance: Microsoft Visual C++ Build Tools (for SpaCy)
 
-## Installation - Easy Method
+## Installation & Running
 
-1. Simply run the `setup_and_run.bat` script
+### First-time Setup
+
+1. Run the `setup_and_run.bat` script
 2. Follow the prompts in the console
 
 The script will:
+
 - Set up a Python virtual environment
-- Install required dependencies
-- Download language models (if possible)
+- Install required dependencies (Flask, SpaCy, etc.)
+- Let you choose which SpaCy language model to download:
+  - Small model (~13MB): Faster but less accurate
+  - Medium model (~45MB): Good balance of size and capability
+  - Large model (~550MB): Best accuracy but largest download
 - Start the Flask application
+
+### Running After Setup
+
+For subsequent runs after installation:
+
+- Run `setup_and_run.bat run` to skip the setup process and start the application directly
+
+This command will:
+
+- Activate the existing virtual environment
+- Start the Flask application immediately
 
 ## Manual Installation
 
@@ -67,21 +88,52 @@ If you encounter errors installing SpaCy:
 
 ## How It Works
 
-1. **Data Processing**: The application loads FAQ data from `faqs.json` and processes it using either:
-   - SpaCy's natural language processing (preferred)
-   - A simpler tokenization and TF-IDF approach (fallback)
+1. **Enhanced Text Processing**: The application loads and processes FAQ data using:
+   - SpaCy's advanced natural language processing (preferred method)
+   - Enhanced TF-IDF approach with domain-specific optimizations (fallback)
+   - Intelligent entity recognition and extraction
 
-2. **Question Matching**: When a user asks a question, the system finds the best match using:
-   - Cosine similarity with SpaCy's word vectors (if available)
-   - TF-IDF based similarity (fallback)
+2. **Advanced Question Matching**: When a user asks a question, the system:
+   - Detects question intent (definition, comparison, how-to, etc.)
+   - Identifies key entities and concepts
+   - Considers conversation history and context
+   - Uses vector similarity with contextual boosting
+   - Applies domain-specific weights for AI engineering terms
 
-3. **Response Generation**: The system returns the answer associated with the most similar question if the similarity score exceeds a threshold.
+3. **Intelligent Response Generation**: The system generates responses by:
+   - Selecting the best matching FAQ or combining multiple relevant FAQs
+   - Maintaining conversation context for follow-up questions
+   - Generating suggested follow-up questions based on the current topic
+   - Providing related questions from the knowledge base
+   - Adding contextual information when continuing a topic
 
 ## Project Structure
 
-- `app.py`: Main application file containing the Flask server and NLP logic
-- `faqs.json`: JSON file containing FAQ data (questions and answers)
-- `templates/index.html`: HTML template for the chat interface
-- `static/style.css`: CSS styling for the chat interface
-- `static/script.js`: JavaScript code for handling user interactions
-- `setup_and_run.bat`: Windows batch script for easy setup and execution
+- `app.py`: Main application with Flask server, advanced NLP processing, and intelligent response generation
+- `faqs.json`: Knowledge base containing FAQ data (questions and answers)
+- `templates/index.html`: HTML template for the responsive chat interface
+- `static/style.css`: CSS styling with animations and responsive design
+- `static/script.js`: JavaScript code for enhanced UI interactions and conversation management
+- `setup_and_run.bat`: Intelligent setup script with error handling and diagnostics
+
+## Advanced Features
+
+### Conversation Context Management
+
+The chatbot remembers previous interactions and maintains context, allowing for natural follow-up questions without repeating information.
+
+### Intent Recognition
+
+The system identifies the intent behind questions (definitions, comparisons, how-to, etc.) to provide more relevant answers.
+
+### Multi-source Answer Generation
+
+For complex questions, the system can combine information from multiple FAQs to create comprehensive answers.
+
+### Suggestion Chips
+
+After answering a question, the chatbot provides suggestion chips for related topics and follow-up questions to guide the conversation.
+
+### Graceful Degradation
+
+The system automatically detects available capabilities and provides the best possible experience regardless of dependencies.

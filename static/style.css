@@ -30,6 +30,7 @@ body {
     color: white;
     padding: 20px;
     text-align: center;
+    position: relative;
 }
 
 .chat-header h1 {
@@ -40,6 +41,25 @@ body {
 .chat-header p {
     font-size: 0.9rem;
     opacity: 0.9;
+}
+
+#clear-button {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#clear-button:hover {
+    background-color: #c0392b;
 }
 
 .chat-messages {
@@ -154,4 +174,52 @@ body {
     30% {
         transform: translateY(-5px);
     }
+}
+
+.message-time {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    margin-top: 5px;
+    display: block;
+    text-align: right;
+}
+
+.context-info {
+    font-style: italic;
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-top: 3px;
+    color: #7f8c8d;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Suggestion chips styling */
+.suggestion-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.suggestion-chip {
+    background-color: #e1f5fe;
+    color: #0277bd;
+    border: none;
+    border-radius: 16px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.suggestion-chip:hover {
+    background-color: #b3e5fc;
 }

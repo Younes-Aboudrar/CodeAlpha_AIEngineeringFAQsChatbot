@@ -1,5 +1,9 @@
 @echo off
 setlocal enabledelayedexpansion
+
+rem Check if the user only wants to run the application
+if /i "%1"=="run" goto :runonly
+
 echo Setting up AI Engineering FAQ Chatbot...
 
 rem Check if Python is installed
@@ -33,23 +37,13 @@ if %ERRORLEVEL% NEQ 0 (
 )
 echo Virtual environment activated.
 
-echo Checking for required build tools...
-where cl.exe >nul 2>&1
+echo Preparing for installation...
+echo Installing pip, setuptools and wheel...
+pip install -U pip setuptools wheel
 if %ERRORLEVEL% NEQ 0 (
-    echo Microsoft Visual C++ Build Tools are required but not found.
-    echo Please install Visual C++ Build Tools from:
-    echo https://visualstudio.microsoft.com/visual-cpp-build-tools/
-    echo.
-    echo After installation, run this script again.
-    echo.
-    echo Alternatively, we'll try to install pre-built wheels to avoid compilation.
-    echo.
-    choice /C YN /M "Do you want to try installing pre-built wheels instead? (Y/N)"
-    if !ERRORLEVEL! EQU 2 (
-        pause
-        exit /b 1
-    )
-    echo Will try to use pre-built wheels...
+    echo Failed to update pip and setuptools.
+    pause
+    exit /b 1
 )
 
 echo Installing Flask...
@@ -60,31 +54,36 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-echo Installing pre-built wheels for SpaCy dependencies...
-pip install wheel
-if %ERRORLEVEL% NEQ 0 (
-    echo Failed to install wheel package.
-    pause
-    exit /b 1
-)
-
-rem Try to install pre-built wheels if available
 echo Installing SpaCy (this may take some time)...
-pip install spacy --no-build-isolation
+pip install spacy
 if %ERRORLEVEL% NEQ 0 (
     echo.
-    echo WARNING: Failed to install SpaCy.
+    echo WARNING: Failed to install SpaCy using standard installation.
     echo.
-    echo You need to install Microsoft Visual C++ Build Tools to compile SpaCy.
-    echo Please visit: https://visualstudio.microsoft.com/visual-cpp-build-tools/
-    echo.
-    echo The application will still run using a fallback text processing method.
+    echo This might be because Microsoft Visual C++ Build Tools are required but not found.
+    echo Checking if build tools are available...
+    
+    where cl.exe >nul 2>&1
+    if %ERRORLEVEL% NEQ 0 (
+        echo Microsoft Visual C++ Build Tools are not found.
+        echo Please install Visual C++ Build Tools from:
+        echo https://visualstudio.microsoft.com/visual-cpp-build-tools/
+        echo.
+        echo The application will still run using a fallback text processing method.
+        echo.
+    ) else (
+        echo Build tools found, but installation still failed.
+        echo Trying alternative installation methods...
+        pip install spacy --no-build-isolation
+    )
+    
     echo.
     choice /C YN /M "Continue with setup? (Y/N)"
     if !ERRORLEVEL! EQU 2 (
         pause
         exit /b 1
     )
+    echo The application will use a fallback text processing method.
 )
 
 echo Installing NumPy...
@@ -103,11 +102,25 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-rem Download SpaCy model (using the small model which is faster to download and doesn't need compilation)
-echo Downloading SpaCy model (this may take a few minutes)...
-python -m spacy download en_core_web_lg
+rem Let user choose which SpaCy model to download
+echo.
+echo Please choose which SpaCy model to download:
+echo.
+echo 1. Small model (en_core_web_sm) - Faster download, less accurate, ~13MB
+echo 2. Medium model (en_core_web_md) - Better performance with vectors, ~45MB
+echo 3. Large model (en_core_web_lg) - Best performance, includes vectors, ~550MB
+echo.
+choice /C 123 /N /M "Enter your choice (1-3): "
+
+set MODEL=en_core_web_sm
+if !ERRORLEVEL! EQU 2 set MODEL=en_core_web_md
+if !ERRORLEVEL! EQU 3 set MODEL=en_core_web_lg
+
+echo.
+echo Downloading SpaCy model !MODEL! (this may take a few minutes)...
+python -m spacy download !MODEL!
 if %ERRORLEVEL% NEQ 0 (
-    echo WARNING: Failed to download SpaCy model.
+    echo WARNING: Failed to download SpaCy model !MODEL!.
     echo The application will still run using a fallback text processing method.
     echo.
     choice /C YN /M "Continue with setup? (Y/N)"
@@ -116,10 +129,32 @@ if %ERRORLEVEL% NEQ 0 (
         exit /b 1
     )
 ) else (
-    echo SpaCy model downloaded successfully.
+    echo SpaCy model !MODEL! downloaded successfully.
 )
 
 echo Setup complete! Starting the application...
+goto :startapp
+
+:runonly
+echo Starting AI Engineering FAQ Chatbot...
+
+rem When only running, activate the virtual environment if it exists
+if exist venv\ (
+    call venv\Scripts\activate
+    if %ERRORLEVEL% NEQ 0 (
+        echo Failed to activate virtual environment.
+        echo Running with system Python...
+    ) else (
+        echo Virtual environment activated.
+    )
+) else (
+    echo No virtual environment found. Using system Python...
+    echo If this fails, run the script without parameters first to set up the environment.
+)
+
+:startapp
+rem Run the application
 python app.py
 
 pause
+exit /b 0
