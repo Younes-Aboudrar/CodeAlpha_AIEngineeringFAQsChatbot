@@ -1,64 +1,120 @@
 # AI Engineering FAQ Chatbot
 
-A simple chatbot application that answers questions about AI Engineering using Natural Language Processing techniques.
+An intelligent chatbot application that answers questions about AI Engineering using advanced Natural Language Processing techniques, featuring context-awareness and multi-source answer composition.
+
+![AI Engineering FAQ Chatbot Interface](pic1.png)
 
 ## Features
 
-- Advanced NLP processing using SpaCy (with intelligent fallback methods if SpaCy is unavailable)
-- Smart question matching using semantic similarity, entity recognition, and intent detection
-- Clean, responsive chat interface with typing indicators and animations
-- Conversational context awareness and follow-up question handling
-- Intelligent suggestion chips for related questions and follow-ups
-- Multi-source answer generation for complex questions
-- Conversation history tracking with context preservation
-- Enhanced UI with timestamps, suggestion chips, and visual feedback
+- **Advanced NLP Processing**: Utilizes SpaCy for sophisticated text analysis with intelligent fallback mechanisms
+- **Semantic Question Matching**: Implements vector similarity (SpaCy) and enhanced TF-IDF for question matching
+- **Intent Recognition**: Identifies question types (definitions, comparisons, how-to, etc.) for more accurate responses
+- **Context-Aware Conversations**: Maintains conversation history to properly handle follow-up questions
+- **Entity Recognition**: Extracts key AI engineering concepts to enhance matching and response generation
+- **Multi-Source Answer Composition**: Combines information from multiple FAQs for complex questions
+- **Intelligent Fallbacks**: Provides helpful responses even when no exact match is found
+- **Responsive UI**: Clean interface with typing indicators, formatted responses, and suggestion chips
+
+## System Architecture
+
+This chatbot implements a sophisticated architecture with multiple components:
+
+1. **Knowledge Base**: A structured collection of AI Engineering FAQs in JSON format
+2. **Natural Language Processing**: Advanced text analysis using SpaCy or a robust fallback system
+3. **Question Matching**: Semantic similarity using vectors or enhanced TF-IDF with custom boosting
+4. **Intent Recognition**: Pattern-based detection of question types and conversation context
+5. **Web Interface**: Responsive UI with real-time interaction and message formatting
 
 ## Prerequisites
 
 - Python 3.7+ installed
 - pip package manager
 - For optimal performance: Microsoft Visual C++ Build Tools (for SpaCy)
+- Web browser with JavaScript enabled
+
+## Recommended Workflow
+
+This chatbot uses a three-step setup process for maximum flexibility and reliability:
+
+1. **Environment Setup**: Run `setup_and_run.bat` to set up the environment and install dependencies
+2. **SpaCy Configuration**: Activate the environment and run `spacy_setup.py` to configure SpaCy
+3. **Application Launch**: Run `app.py` to start the chatbot application
+
+This separation ensures that basic functionality is available even if advanced NLP features encounter issues.
+
+![SpaCy Model Selection Interface](pic2.png)
 
 ## Installation & Running
 
-### First-time Setup
+### Complete Setup Process
 
-1. Run the `setup_and_run.bat` script
-2. Follow the prompts in the console
+Here's the recommended way to set up and run the chatbot:
 
-The script will:
+1. Run the `setup_and_run.bat` script to set up the environment
+   - This creates a Python virtual environment
+   - Installs all required dependencies (Flask, NumPy, scikit-learn, SpaCy, etc.)
 
-- Set up a Python virtual environment
-- Install required dependencies (Flask, SpaCy, etc.)
-- Let you choose which SpaCy language model to download:
-  - Small model (~13MB): Faster but less accurate
-  - Medium model (~45MB): Good balance of size and capability
-  - Large model (~550MB): Best accuracy but largest download
-- Start the Flask application
+2. Manually activate the virtual environment:
 
-### Running After Setup
+   ```powershell
+   venv\Scripts\activate
+   ```
 
-For subsequent runs after installation:
+3. Configure your preferred SpaCy language model:
 
-- Run `setup_and_run.bat run` to skip the setup process and start the application directly
+   ```powershell
+   python spacy_setup.py
+   ```
 
-This command will:
+   - You'll be prompted to select a model:
+     - Small model (~12MB): Faster but less accurate
+     - Medium model (~40MB): Good balance of size and capability
+     - Large model (~560MB): Best accuracy but largest download
+   - The script saves your choice to `config.json` for future use
 
-- Activate the existing virtual environment
-- Start the Flask application immediately
+4. Run the application:
+
+   ```powershell
+   python app.py
+   ```
+
+5. Open a web browser and navigate to: `http://localhost:5000`
+
+For subsequent uses, you only need to activate the environment and run the application (steps 2, 4, and 5).
 
 ## Manual Installation
 
-If you prefer to install manually:
+If you prefer to install without the batch script:
 
-1. Create a virtual environment: `python -m venv venv`
-2. Activate the virtual environment: `venv\Scripts\activate`
-3. Install Flask: `pip install flask`
-4. Install NumPy: `pip install numpy`
-5. Install scikit-learn: `pip install scikit-learn`
-6. Install SpaCy (optional): `pip install spacy`
-7. Download SpaCy model (optional): `python -m spacy download en_core_web_sm`
-8. Run the application: `python app.py`
+1. Create a virtual environment:
+
+   ```powershell
+   python -m venv venv
+   ```
+
+2. Activate the virtual environment:
+
+   ```powershell
+   venv\Scripts\activate
+   ```
+
+3. Install dependencies:
+
+   ```powershell
+   pip install -r requirements.txt
+   ```
+
+4. Configure a SpaCy model:
+
+   ```powershell
+   python spacy_setup.py
+   ```
+
+5. Run the application:
+
+   ```powershell
+   python app.py
+   ```
 
 ## Troubleshooting
 
@@ -80,41 +136,67 @@ If you encounter errors installing SpaCy:
 - Verify pip is installed: `pip --version`
 - Make sure you're running commands from the project directory
 
-## Running the Application
+## Quick Start (After Initial Setup)
 
-1. If you didn't use the setup script, start the Flask server: `python app.py`
-2. Open a web browser and go to: `http://localhost:5000`
-3. Start asking questions about AI Engineering!
+1. Activate the virtual environment:
+
+   ```powershell
+   venv\Scripts\activate
+   ```
+
+2. Start the Flask server:
+
+   ```powershell
+   python app.py
+   ```
+
+3. Open a web browser and go to: `http://localhost:5000`
+4. Start asking questions about AI Engineering!
 
 ## How It Works
 
-1. **Enhanced Text Processing**: The application loads and processes FAQ data using:
-   - SpaCy's advanced natural language processing (preferred method)
-   - Enhanced TF-IDF approach with domain-specific optimizations (fallback)
-   - Intelligent entity recognition and extraction
+1. **Adaptive NLP Processing**: The application processes natural language using:
+   - **SpaCy Integration**: When installed, the system leverages the selected SpaCy model (small/medium/large)
+   - **Custom TF-IDF Fallback**: When SpaCy is unavailable, a robust TF-IDF algorithm handles text processing
+   - **Model Configuration**: The `spacy_setup.py` script manages SpaCy model selection and installation
+   - **Configuration Persistence**: Model choices are stored in `config.json` for future sessions
 
-2. **Advanced Question Matching**: When a user asks a question, the system:
-   - Detects question intent (definition, comparison, how-to, etc.)
-   - Identifies key entities and concepts
-   - Considers conversation history and context
-   - Uses vector similarity with contextual boosting
-   - Applies domain-specific weights for AI engineering terms
+2. **Question Analysis & Matching**:
+   - **Vector Similarity**: With SpaCy enabled, the system compares question vectors for semantic similarity
+   - **TF-IDF Matching**: The fallback system uses TF-IDF vectors with custom weighting
+   - **Knowledge Base Search**: Questions are matched against the structured data in `faqs.json`
+   - **Answer Ranking**: Results are sorted by confidence score with a minimum threshold filter
 
-3. **Intelligent Response Generation**: The system generates responses by:
-   - Selecting the best matching FAQ or combining multiple relevant FAQs
-   - Maintaining conversation context for follow-up questions
-   - Generating suggested follow-up questions based on the current topic
-   - Providing related questions from the knowledge base
-   - Adding contextual information when continuing a topic
+3. **Web Interface & Interaction**:
+   - **Flask Backend**: Handles HTTP requests and serves the web application
+   - **AJAX Communication**: Asynchronous JavaScript updates the interface without page reloads
+   - **Response Formatting**: Messages are properly formatted with markdown-like syntax
+   - **Chat History**: User and system messages are displayed in a scrollable conversation view
 
 ## Project Structure
 
-- `app.py`: Main application with Flask server, advanced NLP processing, and intelligent response generation
-- `faqs.json`: Knowledge base containing FAQ data (questions and answers)
+### Core Components
+
+- `app.py`: Main application with Flask server, NLP processing, and conversation management
+- `faqs.json`: Structured knowledge base containing AI Engineering question-answer pairs
+- `config.json`: Configuration file storing the selected SpaCy model (created during setup)
+
+### Setup & Configuration
+
+- `setup_and_run.bat`: Environment setup script that creates virtualenv and installs dependencies
+- `spacy_setup.py`: Interactive utility for SpaCy model selection and installation
+- `requirements.txt`: List of Python dependencies including Flask, scikit-learn, and SpaCy
+
+### Web Interface
+
 - `templates/index.html`: HTML template for the responsive chat interface
-- `static/style.css`: CSS styling with animations and responsive design
-- `static/script.js`: JavaScript code for enhanced UI interactions and conversation management
-- `setup_and_run.bat`: Intelligent setup script with error handling and diagnostics
+- `static/style.css`: CSS styling with animations, message formatting, and responsive design
+- `static/script.js`: Client-side JavaScript for UI interactions and conversation management
+
+### Documentation
+
+- `README.md`: User guide with setup instructions and feature overview
+- `TECHNICAL_DOCS.md`: Technical documentation of system architecture and implementation
 
 ## Advanced Features
 

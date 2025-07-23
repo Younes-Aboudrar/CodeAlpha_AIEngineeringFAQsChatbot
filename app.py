@@ -19,38 +19,40 @@ app.secret_key = "ai_engineering_chatbot_secure_key_2025"
 MAX_CONVERSATION_HISTORY = 5
 
 # Flag to determine if we're using SpaCy or a simple fallback
-USE_SPACY = True
+USE_SPACY = False
+nlp = None
 
-# Try to load SpaCy and its model
+# Try to load SpaCy and its model from config
 try:
     import spacy
-    try:
-        # Try to load any available SpaCy model in preference order
-        spacy_models = ["en_core_web_lg", "en_core_web_md", "en_core_web_sm"]
-        loaded_model = None
-        
-        for model in spacy_models:
-            try:
-                nlp = spacy.load(model)
-                loaded_model = model
-                print(f"SpaCy loaded successfully with {model} model")
-                break
-            except OSError:
-                continue
-        
-        # If no models were found, try to download the small model
-        if loaded_model is None:
-            print("No SpaCy models found. Trying to download model...")
-            import subprocess
-            subprocess.call(["python", "-m", "spacy", "download", "en_core_web_sm"])
-            nlp = spacy.load("en_core_web_sm")
-            print("SpaCy model downloaded and loaded successfully")
-    except Exception as e:
-        print(f"Error loading or downloading SpaCy model: {e}")
-        USE_SPACY = False
+    import os
+    
+    # Check if config.json exists
+    if os.path.exists("config.json"):
+        try:
+            with open("config.json", "r") as config_file:
+                config = json.load(config_file)
+                if "spacy_model" in config:
+                    model_name = config["spacy_model"]
+                    try:
+                        nlp = spacy.load(model_name)
+                        print(f"SpaCy loaded successfully with {model_name} model from config")
+                        USE_SPACY = True
+                    except OSError as e:
+                        print(f"Error loading SpaCy model '{model_name}' from config: {e}")
+                        print("Using fallback text processing. Run spacy_setup.py to setup SpaCy properly.")
+                else:
+                    print("No SpaCy model specified in config.json.")
+                    print("Using fallback text processing. Run spacy_setup.py to setup SpaCy properly.")
+        except Exception as e:
+            print(f"Error reading config.json: {e}")
+            print("Using fallback text processing. Run spacy_setup.py to setup SpaCy properly.")
+    else:
+        print("Config file not found. Using fallback text processing.")
+        print("Run spacy_setup.py to setup SpaCy and download a language model.")
 except ImportError:
     print("SpaCy not installed. Using fallback text processing.")
-    USE_SPACY = False
+    print("Run spacy_setup.py to setup SpaCy properly.")
 
 # Enhanced fallback functions for text processing
 def simple_preprocess_text(text):
